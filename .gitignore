@@ -136,3 +136,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+.vs/slnx.sqlite
+
+.vs/systemexploiProjet/v16/.suo
