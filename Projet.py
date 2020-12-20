@@ -1,12 +1,34 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 
+#DataSO1 = [b0,a1,a0,T,K,f,s]
+class data:
+    b0 = 0.0
+    a2 = 0.0
+    a1 = 0.0
+    a0 = 0.0
+    T = 0.0
+    K = 0.0
+    ksi = 0.0
+    f = 0.0
+    s = 0.0
 
 def bode1(fct):
     print("Bode1")
 
-def black1(fct):
-    print("black1")
+def black1(data):
+    Tjw = data.K / 1 + data.s * data.T
+    mag = 20*np.log10(np.abs(Tjw))
+    phase = np.arctan2(np.imag(Tjw),np.real(Tjw))*180/np.pi
+    print("flag")
+    plt.figure()
+    plt.plot(phase,mag)
+    plt.xlabel("Phase")
+    plt.ylabel("Mag")
+    plt.title("Black S01")
+    plt.show
+    print("flag2")
     
 def niq1(fct):
     print("niq1")
@@ -20,80 +42,45 @@ def black2(fct):
 def niq2(fct):
     print("niq2")
 
-def checkSO(fct): #WIP
-    for x in fct:
-        if(x == "/"): break
-        elif(x == "s"): return 2
-    return 1
 
-def data1(fct):
-    b0check = False
-    a1check = False
-    b0 = ""
-    a0 = ""
-    a1 = ""
-    for x in fct:
-        if(not b0check and not a1check):
-            if(x != "/" and x != " "): b0 += str(x)
-            elif(x == "/"): 
-               b0check = True
-               continue
-       
-        if(b0check and not a1check):
-            if(x != " " and x != "/"): a1 += str(x)
-            elif(x == " "): 
-                a1check = True
-                continue
-            
-        elif(b0check and a1check):
-            if(x != " "): a0 += str(x)
-            
-    data = [b0,a1,a0]  
-    return data
+def computeDataSO1(data):  
+    data.T = data.a1/data.a0
+    data.K = data.b0/data.a0
+    runPlot(1)
 
-def data2(fct):
-    b0check = False
-    a2check = False
-    a1check = False
-    b0= ""
-    a0= ""
-    a1= ""
-    a2= ""
-    for x in fct:
-        if(not b0check and not a2check and not a1check):
-            if(x != "/" and x != " "): b0 += str(x)
-            elif(x == "/"): 
-                b0check = True
-                continue
 
-        if(b0check and not a2check and not a1check):
-            if(x != " " and x != "/"): a2 += str(x)
-            elif(x == " "):
-                print("Flag")
-                a2check = True
-                continue
-            
-        elif(b0check and a2check and not a1check):
-            if(x != " "): a1 += str(x)
-            elif(x == " "): 
-                a1check = True
-                continue
-        
-        elif(b0check and a2check and a1check):
-            if(x != " "): a0 += str(x)
-            
-    data = [b0,a2,a1,a0]  
-    return data
+def computeDataSO2(data):  
+    data.T = (data.a2/data.a0)**0.5
+    data.K = data.b0/data.a0
+    data.ksi = 0.5*((data.a1**2 /data.a0*data.a2)**0.5)
+    runPlot(2)
+
+def getInputData(data):
+    data.b0 = float(input("Entrer b0 = "))     
+    data.a2 = float(input("Entrer a2 = "))        
+    data.a1 = float(input("Entrer a1 = "))        
+    data.a0 = float(input("Entrer a0 = "))
+
+def runPlot(SO):
+    if(SO == 1):
+        bode1(dataG)
+        black1(dataG)
+        niq1(dataG)
+    else:
+        bode2(dataG)
+        black2(dataG)
+        niq2(dataG)
+
+#=======================MAIN================================================
+
+dataG = data()
+dataG.f = np.logspace(-2,4,1000)
+dataG.s = 1.0j*(2*np.pi*dataG.f)
 
 while 1:
-    fct = input("Entrer la fonction: ")
-    #choix du SO1 ou SO2
-    SO = checkSO(fct)
-    print("Votre est " + fct + """ 
-    Cette Fonction est un SO""" + str(SO))
-    #Extraction des donnes
-    data = data2(fct)
-    print(data)
+    getInputData(dataG)
+    computeDataSO1(dataG) if(data.a2 == 0 ) else compcomputeDataSO2(dataG)
+
     #Utilisation des fonctions de plot SO1 ou SO2
 
     exit = input("Appuyer sur '1' pour recommencer, sinon sur n'importe quelle touche")
