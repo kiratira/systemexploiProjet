@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import math
+from math import * 
 
 #DataSO1 = [b0,a1,a0,T,K,f,s]
 class data:
@@ -11,33 +11,101 @@ class data:
     T = 0.0
     K = 0.0
     ksi = 0.0
-    f = 0.0
-    s = 0.0
+    f = range(10000)
+    interval = 0.1
+
+    phaseBL2 = []
+    gainBL2 = []
+    phaseBL1 = []
+    gainBL1 = []
+    phaseBO2 = []
+    gainBO2 = []
+    phaseBO1 = []
+    gainBO1 = []
+
+
 
 def bode1(fct):
     print("Bode1")
 
 def black1(data):
-    Tjw = data.K / 1 + data.s * data.T
-    mag = 20*np.log10(np.abs(Tjw))
-    phase = np.arctan2(np.imag(Tjw),np.real(Tjw))*180/np.pi
-    print("flag")
-    plt.figure()
-    plt.plot(phase,mag)
-    plt.xlabel("Phase")
-    plt.ylabel("Mag")
-    plt.title("Black S01")
-    plt.show
-    print("flag2")
+    pass
     
 def niq1(fct):
     print("niq1")
     
-def bode2(fct):
-    print("bode2")
+def bode2(data):
+    Module = []
+    Gain = []
+    Phase = []
+    i = 0
+    w = 0
+
+    Module.append(data.K)
+    while i < 10000:
+        # Calcule du Gain avec la formule du SO2
+        #valeur1 = float((1 - (pow(w, 2) * pow(T, 2)))**2)
+        #valeur2 = float(2 * pow(w, 2) * pow(KSI, 2) * pow(T, 2))
+        #valeur3 = float(sqrt(valeur1 + valeur2))
+        Module.append(float(sqrt((((1 - w**2 * data.T**2))**2) + (2 * w**2 * data.ksi**2 * data.T**2))))
+        #valeur4 = float(log10(K) * 20) - float(log10(Module[i]) * 20)
+
+        # On ajoute un element à la fin du tableau
+        Gain.append(float(log10(data.K) * 20 - log10(Module[i]) * 20))
+
+        # Calcule de la Phase avec la formule du SO2
+        #valeur5 = float(2 * w * KSI * T)
+        #valeur6 = float(1 - (pow(w, 2) * pow(T, 2)))
+
+        # On fait l'arctg des 2 valeurs (résultat en rad/s)
+        artg = -atan2(float(2 * w * data.ksi * data.T), float(1 - w**2 * data.T**2))
+
+        # On convertie les rad/s en degrés
+        #valeur8 = degrees(artg)
+
+        # On ajoute un element à la fin du tableau, en convertisant les rad/s en degrés
+        Phase.append(degrees(artg))
+        i+=1
+        w += data.interval
+
+    return Gain,Phase
     
-def black2(fct):
-    print("black2")
+def black2(data):
+    Module = []
+    Gain = []
+    Phase = []
+    i = 0
+    w = 0
+
+    Module.append(data.K)
+    while i < 10000:
+        # Calcule du Gain avec la formule du SO2
+        #valeur1 = float((1 - (pow(w, 2) * pow(T, 2)))**2)
+        #valeur2 = float(2 * pow(w, 2) * pow(KSI, 2) * pow(T, 2))
+        #valeur3 = float(sqrt(valeur1 + valeur2))
+        Module.append(float(sqrt((((1 - w**2 * data.T**2))**2) + (2 * w**2 * data.ksi**2 * data.T**2))))
+        #valeur4 = float(log10(K) * 20) - float(log10(Module[i]) * 20)
+
+        # On ajoute un element à la fin du tableau
+        Gain.append(float(log10(data.K) * 20 - log10(Module[i]) * 20))
+
+        # Calcule de la Phase avec la formule du SO2
+        #valeur5 = float(2 * w * KSI * T)
+        #valeur6 = float(1 - (pow(w, 2) * pow(T, 2)))
+
+        # On fait l'arctg des 2 valeurs (résultat en rad/s)
+        artg = -atan2(float(2 * w * data.ksi * data.T), float(1 - w**2 * data.T**2))
+
+        # On convertie les rad/s en degrés
+        #valeur8 = degrees(artg)
+
+        # On ajoute un element à la fin du tableau, en convertisant les rad/s en degrés
+        Phase.append(degrees(artg))
+        i+=1
+        w += data.interval
+
+    Module.append(data.K)
+    return Gain,Phase
     
 def niq2(fct):
     print("niq2")
@@ -66,31 +134,54 @@ def runPlot(SO):
         bode1(dataG)
         black1(dataG)
         niq1(dataG)
+        showPlot(dataG, 1)
+        
     else:
-        bode2(dataG)
-        black2(dataG)
+        dataG.gainBO2, dataG.phaseBO2 = bode2(dataG)
+        dataG.gainBL2, dataG.phaseBL2 = black2(dataG)
         niq2(dataG)
+        showPlot(dataG, 2)
+
+def showPlot(data, SO):
+    if(SO == 1):
+        pass
+    else :
+        # Graphique Frequence (Bode)
+        plt.subplot(3, 1, 1)
+        plt.semilogx(data.f, data.gainBO2)
+        plt.xlabel('rad/s')
+        plt.ylabel('dB')
+        plt.title("Diagramme de Bode")
+        plt.grid()
+
+        # Graphique degrés (Bode)
+        plt.subplot(3, 1, 2)
+        plt.semilogx(data.f, data.phaseBO2)
+        plt.xlabel('rad/s')
+        plt.ylabel('Phase')
+        plt.grid()
+
+        # Graphique Black
+        plt.subplot(3, 1, 3)
+        plt.plot(data.phaseBL2, data.gainBL2)
+        plt.xlabel('Phase')
+        plt.ylabel('dB')
+        plt.title("Black")
+        plt.grid()
+    
+        plt.show()
+
 
 #=======================MAIN================================================
 
 dataG = data()
-dataG.f = np.logspace(-2,4,1000)
-dataG.s = 1.0j*(2*np.pi*dataG.f)
+
 
 while 1:
     getInputData(dataG)
-    computeDataSO1(dataG) if(data.a2 == 0 ) else compcomputeDataSO2(dataG)
+    computeDataSO1(dataG) if(dataG.a2 == 0 ) else computeDataSO2(dataG)
 
     #Utilisation des fonctions de plot SO1 ou SO2
 
     exit = input("Appuyer sur '1' pour recommencer, sinon sur n'importe quelle touche")
     if(not exit):break
-
-    if(SO == 1):
-        bode1(fct)
-        black1(fct)
-        niq1(fct)
-    elif(SO == 2):
-        bode2(fct)
-        black2(fct)
-        niq2(fct)
