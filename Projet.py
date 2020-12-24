@@ -32,24 +32,22 @@ def bodeAndBlack1(data):
     Phase = []
     i = 0
     w = 0
-  
-    Module.append(data.K)
+    module = 0.0
+    
 
     # Boucle pour calculer 10000 points du graphique
     while i < 100000:
 
         # Calcule du Gain avec la formule du SO1
-        Module.append(sqrt(1 + (data.T**2 * w**2)))
+        module = sqrt(1 + (data.T**2 * w**2))
 
         # On ajoute un element à la fin du tableau
-        Gain.append(log10(data.K) * 20 - log10(Module[i]) * 20)
+        Gain.append(log10(data.K) * 20 - log10(module) * 20)
 
         # On convertie les rad/s en degrés, après l'arctg des 2 valeurs ET on ajoute un element à la fin du tableau
         Phase.append(degrees(-atan2(w * data.T, 1)))
         i += 1
         w += data.interval
-
-    Module.append(data.K)
 
     return Gain,Phase
 
@@ -74,19 +72,18 @@ def niq1(data):
 
     
 def bodeAndBlack2(data):
-    Module = []
     Gain = []
     Phase = []
     i = 0
     w = 0
-
-    Module.append(data.K)
+    module = 0.0
+    
     while i < data.iteration:
         # Calcule du Gain avec la formule du SO2
-        Module.append(float(sqrt((((1 - w**2 * data.T**2))**2) + (2 * w**2 * data.ksi**2 * data.T**2))))
+        module = sqrt((((1 - w**2 * data.T**2))**2) + (2 * w**2 * data.ksi**2 * data.T**2))))
 
         # On ajoute un element à la fin du tableau
-        Gain.append(float(log10(data.K) * 20 - log10(Module[i]) * 20))
+        Gain.append(float(log10(data.K) * 20 - log10(module) * 20))
 
         # On fait l'arctg de la Phase avec la formule du SO2 (résultat en rad/s)
         artg = -atan2(float(2 * w * data.ksi * data.T), float(1 - w**2 * data.T**2))
