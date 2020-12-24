@@ -6,10 +6,9 @@ import matplotlib.pyplot as plt
 from math import *
 
 
-b0 = input("Entrer la valeur de b0: ")
-a2 = input("Entrer la valeur de a2: ")
-a1 = input("Entrer la valeur de a1: ")
-a0 = input("Entrer la valeur de a0: ")
+b0 = 1
+a1 = 2
+a0 = 3
 
 Module = []
 Gain = []
@@ -22,49 +21,35 @@ w = 0
 # Calcule de K
 K = int(b0)/int(a0)
 
-# Caclule du A2(s^2)
-A2 = int(a2)/int(a0)
-
 # Calcule du A1(s)
 A1 = int(a1)/int(a0)
 
 # Calcule du A0
 A0 = int(a0)/int(a0)
 
-# Calcule du T
-T = float(sqrt(A2))
-valeur = float(T)*int(2)
-
-# Calcule du KSI
-KSI = float(A1)/float(valeur)
 
 Module.append(K)
 
 # Boucle pour calculer 10000 points du graphique
 while i < 10000:
 
-    # Calcule du Gain avec la formule du SO2
-    valeur1 = float((1 - (pow(w, 2) * pow(T, 2)))**2)
-    valeur2 = float(2 * pow(w, 2) * pow(KSI, 2) * pow(T, 2))
-    valeur3 = float(sqrt(valeur1 + valeur2))
-    Module.append(valeur3)
-    valeur4 = float(log10(K) * 20) - float(log10(Module[i]) * 20)
+    # Calcule du Gain avec la formule du SO1
+    valeur1=float((pow(A1,2) * pow(w,2)))
+    valeur2=float(sqrt(A0 + valeur1))
+    Module.append(valeur2)
+    valeur3=float(log10(K) * 20) - float(log10(Module[i]) * 20)
 
     # On ajoute un element à la fin du tableau
-    Gain.append(valeur4)
-
-    # Calcule de la Phase avec la formule du SO2
-    valeur5 = float(2 * w * KSI * T)
-    valeur6 = float(1 - (pow(w, 2) * pow(T, 2)))
+    Gain.append(valeur3)
 
     # On fait l'arctg des 2 valeurs (résultat en rad/s)
-    valeur7 = -atan2(valeur5, valeur6)
+    valeur4 = -atan2(w * A1, A0)
 
     # On convertie les rad/s en degrés
-    valeur8 = degrees(valeur7)
+    valeur5 = degrees(valeur4)
 
     # On ajoute un element à la fin du tableau
-    Phase.append(valeur8)
+    Phase.append(valeur5)
     i += 1
     w = w + interval
 
