@@ -5,70 +5,64 @@ Alexio Goossens et Youri Iacono 20/12/2020
 from math import *
 import matplotlib.pyplot as plt
 
-
 b0 = 100
 a2 = 1
 a1 = 2
 a0 = 3
 
-Module = []
+# Calcule de K (Gain statique)
+K = b0 / a0
+
+# Caclule du A2(s^2)
+A2 = a2 / a0
+
+# Calcule du A1(s)
+A1 = a1 / a0
+
+# Calcule du A0
+A0 = a0 / a0
+
+# Calcule du T (Constante temporelle du SO2)
+T = sqrt(A2)
+
+# Calcule du KSI (Coefficient d'amortissement du SO2)
+KSI = A1 / (T * 2)
+
+# Boucle pour calculer les xier échantillon du graphique
 Gain = []
 Phase = []
-i = 0
-Frequence = range(10000)
+nombre_echantillon = 10000
+Frequence = range(nombre_echantillon)
 interval = 0.1
 w = 0
 
-# Calcule de K
-K = b0/a0
-
-# Caclule du A2(s^2)
-A2 = a2/a0
-
-# Calcule du A1(s)
-A1 = a1/a0
-
-# Calcule du A0
-A0 = a0/a0
-
-# Calcule du T
-T = sqrt(A2)
-valeur = T * 2
-
-# Calcule du KSI
-KSI = A1/valeur
-
-Module.append(K)
-
-# Boucle pour calculer 10000 points du graphique
-while i < 10000:
-
+i = 0
+while i < nombre_echantillon:
     # Calcule du Gain avec la formule du SO2
-    valeur1 = (1 - (pow(w, 2) * pow(T, 2)))**2
-    valeur2 = 2 * pow(w, 2) * pow(KSI, 2) * pow(T, 2)
-    module = sqrt(valeur1 + valeur2)
-    Module.append(module)
+    module = sqrt((1 - (pow(w, 2) * pow(T, 2))) ** 2
+                  + 2 * pow(w, 2) * pow(KSI, 2) * pow(T, 2))
 
     # On ajoute un element à la fin du tableau
-    gain = log10(K) * 20 - log10(Module[i]) * 20
+    gain = log10(K) * 20 - log10(module) * 20
     Gain.append(gain)
 
     # Calcule de la Phase avec la formule du SO2
-    valeur5 = 2 * w * KSI * T
-    valeur6 = 1 - (pow(w, 2) * pow(T, 2))
+    phase_imaginaires = 2 * w * KSI * T
+    phase_reels = 1 - (pow(w, 2) * pow(T, 2))
 
     # On fait l'arctg des 2 valeurs (résultat en rad/s)
-    valeur7 = -atan2(valeur5, valeur6)
-
-    # On convertie les rad/s en degrés
-    phase = degrees(valeur7)
+    # Et on convertie les rad/s en degrés
+    phase = degrees(-atan2(phase_imaginaires, phase_reels))
 
     # On ajoute un element à la fin du tableau
     Phase.append(phase)
-    i += 1
-    w = w + interval
 
-Module.append(K)
+    # # Code pour vérifier les valeurs de la boucle quand la boucle vaut i
+    # if i == 0:
+    #     print(f"Module : {module}, Gain : {gain}, Phase : {phase}")
+
+    w += interval
+    i += 1
 
 # Graphique Frequence (Bode)
 plt.subplot(3, 1, 1)
