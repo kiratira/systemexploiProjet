@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from math import * 
 
 
@@ -226,5 +225,5 @@ while 1:
     computeDataSO1(dataG) if(dataG.a2 == 0 ) else computeDataSO2(dataG)
 
     # Utilisation des fonctions de plot SO1 ou SO2
-    exit = int(input("Appuyer sur '1' pour recommencer, sinon sur n'importe quelle touche"))
-    if(exit != 1):break
+    exit = input("Appuyer sur '1' pour recommencer, sinon sur n'importe quelle touche")
+    if(exit != "1"):break
