@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from math import * 
+from math import sqrt, log10, atan2, degrees
 
 
 # DataSO1 = [b0,a1,a0,T,K,f,s]
@@ -128,10 +128,17 @@ def computeDataSO2(data):
 
 
 def getInputData(data):
-    data.b0 = float(input("Entrer b0 = "))     
-    data.a2 = float(input("Entrer a2 = "))        
-    data.a1 = float(input("Entrer a1 = "))        
-    data.a0 = float(input("Entrer a0 = "))
+    dataIsNum = False
+    while not dataIsNum:
+        try:
+            data.b0 = float(input("Entrer b0 = "))
+            data.a2 = float(input("Entrer a2 = "))
+            data.a1 = float(input("Entrer a1 = "))
+            data.a0 = float(input("Entrer a0 = "))
+            dataIsNum = True
+        except ValueError:
+            print("la valeur entrée n'est pas numérique.")
+            continue
 
 
 def runPlot(SO):
